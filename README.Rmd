@@ -70,3 +70,15 @@ However, we can also use the `fatdiag()` function either for diagonal extraction
 ```{r}
 fatdiag(m, steps = 4)
 ```
+
+Fat diagonal matrices can be created using a scalar:
+
+```{r}
+fatdiag(9, steps=3)
+```
+
+or using a vector:
+
+```{r}
+fatdiag(1:27, steps=3)
+```
