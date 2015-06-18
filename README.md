@@ -1,5 +1,5 @@
-Abstract
-========
+Introduction
+============
 
 We present the `diagonals` R package, which implements functions for
 dealing with **fat diagonals**. Fat diagonals are block matrix-diagonals
