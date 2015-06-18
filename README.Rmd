@@ -3,23 +3,56 @@ title: "diagonals: Fat Diagonals in R"
 author: "Bastiaan Quast"
 date: "June 18, 2015"
 output: 
-  html_document: 
-    keep_md: yes
+  md_document
 ---
 
 # Abstract
 We present the `diagonals` R package, which implements functions for dealing with **fat diagonals**.
 Fat diagonals are block matrix-diagonals that occur when two or more dimensions are mapped along a single edge of a matrix.
-An asymetric network graph (e.g. a dyadic social network) in a matrix, we would need each node along each edge of matrix,
+For an asymetric network graph (e.g. a dyadic social network) to be mapped to a matrix, we would need each node along each edge of matrix,
 however we would also need to map the direction of the tie, which is an additional dimension.
-This could be presented as such (where the `i` and `o` suffices prepresent incoming and outgoing repectively). 
+Typically these would be represented as higher-order arrays (i.e. >= 3).
+In order to effectively visualise such arrays, it can be helpful to do so in a matrix.
+This could for instance be represented as in the following matrix (where the `i` and `o` suffices prepresent incoming and outgoing repectively). 
 
 ```{r, echo=FALSE}
-m <- data.frame(Ai = c(1,0,1,1), Ao = c(1,1,0,0),
+M <- data.frame(Ai = c(1,0,1,1), Ao = c(1,1,0,0),
                 Bi = c(0,1,0,1), Bo = c(0,1,0,0),
                 Ci = c(1,0,1,1), Co = c(0,1,1,1),
                 Di = c(1,0,0,1), Do = c(0,1,0,1),
                 row.names = c("A", "B", "C", "D") )
+m <- as.matrix(M)
+m
+```
+
+Sometimes the ties of a node to itself are not particularly meaningful (e.g. feeling of amiability towards oneself) and can be removed.
+For a symetric network this can simply be done using the function `diag()` in R's `base` package, e.g.
+
+```{r}
+sm <- matrix(1, nrow=4, ncol=4)
+diag(sm) <- NA
+sm
+```
+
+However, for higher-order matrices this does not work well.
+
+```{r}
+diag(m) <- NA
+m
+```
+
+```{r echo=FALSE}
+# restore m
+m <- M
+```
+
+In comes the `diagonals` package and its workhorse `fatdiag()` function.
+The function is designed to mimmick the behaviour of the `diag()` as closely as possible,
+but with then for **fat diagonals**.
+
+```{r}
+library(diagonals)
+fatdiag(m, steps=4) <- NA
 m
 ```
 
