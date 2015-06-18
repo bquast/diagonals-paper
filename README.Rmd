@@ -1,12 +1,30 @@
 ---
-title: "diagonals: Fat Diagonals in R"
-author: "Bastiaan Quast"
-date: "June 18, 2015"
-output: 
-  md_document
+author:
+  - name: Bastiaan Quast
+    affiliation: The Graduate Institute, Geneva
+    address: >
+      Maison de la paix
+      Geneva, Switzerland
+    email: bquast@gmail.com
+    url: http://qua.st/
+title:
+  formatted: "\\pkg{diagonals}: Fat Diagonals in R"
+  plain:     "diagonals: Fat Diagonals in R"
+  short:     "\\pkg{diagonas}: Fat Diagonals in R"
+abstract: >
+  The abstract of the article.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [matrix, diagonal, block, "\\proglang{R}"]
+  plain:     [matrix, diagonal, block, R]
+preamble: >
+  \usepackage{amsmath}
+output: rticles::jss_article
 ---
 
 # Introduction
+
+Diagonals are an important matrix manipulation.
 We present the `diagonals` R package, which implements functions for dealing with **fat diagonals**.
 Fat diagonals are block matrix-diagonals that occur when two or more dimensions are mapped along a single edge of a matrix.
 For an asymetric network graph (e.g. a dyadic social network) to be mapped to a matrix, we would need each node along each edge of matrix,
@@ -51,13 +69,36 @@ The function is designed to mimmick the behaviour of the `diag()` as closely as 
 but with then for **fat diagonals**.
 
 ```{r}
+# the matrix m was restored to its original state
 library(diagonals)
 fatdiag(m, steps=4) <- NA
 m
 ```
 
 Note that the `steps` argument defines the number of steps on the diagonal ladder.
-Alternatively we could set the `size` of the step.
+Alternatively we could set the `size` of the step, more on this later.
+
+
+# Design
+
+The implemntation of fat diagonals in the `diagonals` package is instended to be as close as possible to the functions dealing with diagonals included in the `base` package.
+As such, the package includes two functions.
+
+- `fatdiag()`
+- `fatdiag()<-`
+
+These functions offer a very similar syntax to the `base` functions:
+
+- `diag()`
+- `diag()<-`
+
+With the exception that the fat diagonal functions generally need more information in terms of the number of `steps` on the diagonal ladder, or the `size` of these steps.
+
+
+# Usage
+
+In the introduction we briefly demonstrate the usage of the `fatdiag()` function for assigning new `value`s to the fat diagonal.
+Here we take a closer look at some of th additional options which are available.
 
 ```{r}
 fatdiag(m, size=c(1,2) ) <- 881:888
@@ -89,3 +130,10 @@ We can extract a fat diagonal and diagonalise it again.
 m <- matrix(801:881, nrow=9, ncol=9)
 fatdiag( fatdiag(m, steps=3), steps=3)
 ```
+
+# Conclusion
+
+Higher-order arrays can sometimes be mapped to a matrix, which enables us to visualise these arrays in a intuitive manner.
+However, the standard matrix manipulations relating to diagonals become more complex when we do so.
+The `diagonals` package provides the `fatdiag()` function family, which enables the manipulation of fat diagonals in `R`,
+using a syntax that is very close to the `diag()` function family from `R`s `base` package.

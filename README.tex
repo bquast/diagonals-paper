@@ -1,0 +1,272 @@
+\documentclass[article]{jss}
+
+\author{
+Bastiaan Quast\\The Graduate Institute, Geneva
+}
+\title{\pkg{diagonals}: Fat Diagonals in R}
+\Keywords{matrix, diagonal, block, \proglang{R}}
+
+\Abstract{
+The abstract of the article.
+}
+
+\Plainauthor{Bastiaan Quast}
+\Plaintitle{diagonals: Fat Diagonals in R}
+\Shorttitle{\pkg{diagonas}: Fat Diagonals in R}
+\Plainkeywords{matrix, diagonal, block, R}
+
+%% publication information
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{2012-06-04}
+%% \Acceptdate{2012-06-04}
+
+\Address{
+    Bastiaan Quast\\
+  The Graduate Institute, Geneva\\
+  Maison de la paix Geneva, Switzerland\\
+  E-mail: \href{mailto:bquast@gmail.com}{\nolinkurl{bquast@gmail.com}}\\
+  URL: \url{http://qua.st/}
+  }
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\section{Introduction}\label{introduction}
+
+Diagonals are an important matrix manipulation. We present the
+\texttt{diagonals} R package, which implements functions for dealing
+with \textbf{fat diagonals}. Fat diagonals are block matrix-diagonals
+that occur when two or more dimensions are mapped along a single edge of
+a matrix. For an asymetric network graph (e.g.~a dyadic social network)
+to be mapped to a matrix, we would need each node along each edge of
+matrix, however we would also need to map the direction of the tie,
+which is an additional dimension. Typically these would be represented
+as higher-order arrays (i.e. \textgreater{}= 3). In order to effectively
+visualise such arrays, it can be helpful to do so in a matrix. This
+could for instance be represented as in the following matrix (where the
+\texttt{i} and \texttt{o} suffices prepresent incoming and outgoing
+repectively).
+
+\begin{CodeChunk}
+\begin{CodeOutput}
+  Ai Ao Bi Bo Ci Co Di Do
+A  1  1  0  0  1  0  1  0
+B  0  1  1  1  0  1  0  1
+C  1  0  0  0  1  1  0  0
+D  1  0  1  0  1  1  1  1
+\end{CodeOutput}
+\end{CodeChunk}
+
+Sometimes the ties of a node to itself are not particularly meaningful
+(e.g.~feeling of amiability towards oneself) and can be removed. For a
+symetric network this can simply be done using the function
+\texttt{diag()} in R's \texttt{base} package, e.g.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+sm <- matrix(1, nrow=4, ncol=4)
+diag(sm) <- NA
+sm
+\end{CodeInput}
+\begin{CodeOutput}
+     [,1] [,2] [,3] [,4]
+[1,]   NA    1    1    1
+[2,]    1   NA    1    1
+[3,]    1    1   NA    1
+[4,]    1    1    1   NA
+\end{CodeOutput}
+\end{CodeChunk}
+
+However, for higher-order matrices this does not work well.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+diag(m) <- NA
+m
+\end{CodeInput}
+\begin{CodeOutput}
+  Ai Ao Bi Bo Ci Co Di Do
+A NA  1  0  0  1  0  1  0
+B  0 NA  1  1  0  1  0  1
+C  1  0 NA  0  1  1  0  0
+D  1  0  1 NA  1  1  1  1
+\end{CodeOutput}
+\end{CodeChunk}
+
+In comes the \texttt{diagonals} package and its workhorse
+\texttt{fatdiag()} function. The function is designed to mimmick the
+behaviour of the \texttt{diag()} as closely as possible, but with then
+for \textbf{fat diagonals}.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+# the matrix m was restored to its original state
+library(diagonals)
+\end{CodeInput}
+\begin{CodeOutput}
+
+D I
+A G
+    O N
+    A L
+        S
+\end{CodeOutput}
+\begin{CodeInput}
+fatdiag(m, steps=4) <- NA
+m
+\end{CodeInput}
+\begin{CodeOutput}
+  Ai Ao Bi Bo Ci Co Di Do
+A NA NA  0  0  1  0  1  0
+B  0  1 NA NA  0  1  0  1
+C  1  0  0  0 NA NA  0  0
+D  1  0  1  0  1  1 NA NA
+\end{CodeOutput}
+\end{CodeChunk}
+
+Note that the \texttt{steps} argument defines the number of steps on the
+diagonal ladder. Alternatively we could set the \texttt{size} of the
+step, more on this later.
+
+\section{Design}\label{design}
+
+The implemntation of fat diagonals in the \texttt{diagonals} package is
+instended to be as close as possible to the functions dealing with
+diagonals included in the \texttt{base} package. As such, the package
+includes two functions.
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{fatdiag()}
+\item
+  \texttt{fatdiag()\textless{}-}
+\end{itemize}
+
+These functions offer a very similar syntax to the \texttt{base}
+functions:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{diag()}
+\item
+  \texttt{diag()\textless{}-}
+\end{itemize}
+
+With the exception that the fat diagonal functions generally need more
+information in terms of the number of \texttt{steps} on the diagonal
+ladder, or the \texttt{size} of these steps.
+
+\section{Usage}\label{usage}
+
+In the introduction we briefly demonstrate the usage of the
+\texttt{fatdiag()} function for assigning new \texttt{value}s to the fat
+diagonal. Here we take a closer look at some of th additional options
+which are available.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+fatdiag(m, size=c(1,2) ) <- 881:888
+m
+\end{CodeInput}
+\begin{CodeOutput}
+   Ai  Ao  Bi  Bo  Ci  Co  Di  Do
+A 881 882   0   0   1   0   1   0
+B   0   1 883 884   0   1   0   1
+C   1   0   0   0 885 886   0   0
+D   1   0   1   0   1   1 887 888
+\end{CodeOutput}
+\end{CodeChunk}
+
+So far we have been using the set \texttt{fatdiag()}, i.e.
+\texttt{fatdiag()\textless{}-}. However, we can also use the
+\texttt{fatdiag()} function either for diagonal extraction, or diagonal
+matrix creation.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+fatdiag(m, steps = 4)
+\end{CodeInput}
+\begin{CodeOutput}
+[1] 881 882 883 884 885 886 887 888
+\end{CodeOutput}
+\end{CodeChunk}
+
+Fat diagonal matrices can be created using a scalar:
+
+\begin{CodeChunk}
+\begin{CodeInput}
+fatdiag(9, steps=3)
+\end{CodeInput}
+\begin{CodeOutput}
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+ [1,]    1    1    1    0    0    0    0    0    0
+ [2,]    1    1    1    0    0    0    0    0    0
+ [3,]    1    1    1    0    0    0    0    0    0
+ [4,]    0    0    0    1    1    1    0    0    0
+ [5,]    0    0    0    1    1    1    0    0    0
+ [6,]    0    0    0    1    1    1    0    0    0
+ [7,]    0    0    0    0    0    0    1    1    1
+ [8,]    0    0    0    0    0    0    1    1    1
+ [9,]    0    0    0    0    0    0    1    1    1
+\end{CodeOutput}
+\end{CodeChunk}
+
+or using a vector:
+
+\begin{CodeChunk}
+\begin{CodeInput}
+fatdiag(1:27, steps=3)
+\end{CodeInput}
+\begin{CodeOutput}
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+ [1,]    1    4    7    0    0    0    0    0    0
+ [2,]    2    5    8    0    0    0    0    0    0
+ [3,]    3    6    9    0    0    0    0    0    0
+ [4,]    0    0    0   10   13   16    0    0    0
+ [5,]    0    0    0   11   14   17    0    0    0
+ [6,]    0    0    0   12   15   18    0    0    0
+ [7,]    0    0    0    0    0    0   19   22   25
+ [8,]    0    0    0    0    0    0   20   23   26
+ [9,]    0    0    0    0    0    0   21   24   27
+\end{CodeOutput}
+\end{CodeChunk}
+
+We can extract a fat diagonal and diagonalise it again.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+m <- matrix(801:881, nrow=9, ncol=9)
+fatdiag( fatdiag(m, steps=3), steps=3)
+\end{CodeInput}
+\begin{CodeOutput}
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+ [1,]  801  810  819    0    0    0    0    0    0
+ [2,]  802  811  820    0    0    0    0    0    0
+ [3,]  803  812  821    0    0    0    0    0    0
+ [4,]    0    0    0  831  840  849    0    0    0
+ [5,]    0    0    0  832  841  850    0    0    0
+ [6,]    0    0    0  833  842  851    0    0    0
+ [7,]    0    0    0    0    0    0  861  870  879
+ [8,]    0    0    0    0    0    0  862  871  880
+ [9,]    0    0    0    0    0    0  863  872  881
+\end{CodeOutput}
+\end{CodeChunk}
+
+\section{Conclusion}\label{conclusion}
+
+Higher-order arrays can sometimes be mapped to a matrix, which enables
+us to visualise these arrays in a intuitive manner. However, the
+standard matrix manipulations relating to diagonals become more complex
+when we do so. The \texttt{diagonals} package provides the
+\texttt{fatdiag()} function family, which enables the manipulation of
+fat diagonals in \texttt{R}, using a syntax that is very close to the
+\texttt{diag()} function family from \texttt{R}s \texttt{base} package.
+
+\end{document}
+
