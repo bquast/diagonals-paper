@@ -82,3 +82,10 @@ or using a vector:
 ```{r}
 fatdiag(1:27, steps=3)
 ```
+
+We can extract a fat diagonal and diagonalise it again.
+
+```{r}
+m <- matrix(801:881, nrow=9, ncol=9)
+fatdiag( fatdiag(m, steps=3), steps=3)
+```
