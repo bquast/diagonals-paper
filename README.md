@@ -66,3 +66,23 @@ closely as possible, but with then for **fat diagonals**.
     ## B  0  1 NA NA  0  1  0  1
     ## C  1  0  0  0 NA NA  0  0
     ## D  1  0  1  0  1  1 NA NA
+
+Note that the `steps` argument defines the number of steps on the
+diagonal ladder. Alternatively we could set the `size` of the step.
+
+    fatdiag(m, size=c(1,2) ) <- 881:888
+    m
+
+    ##    Ai  Ao  Bi  Bo  Ci  Co  Di  Do
+    ## A 881 882   0   0   1   0   1   0
+    ## B   0   1 883 884   0   1   0   1
+    ## C   1   0   0   0 885 886   0   0
+    ## D   1   0   1   0   1   1 887 888
+
+So far we have been using the set `fatdiag()`, i.e. `fatdiag()<-`.
+However, we can also use the `fatdiag()` function either for diagonal
+extraction, or diagonal matrix creation.
+
+    fatdiag(m, steps = 4)
+
+    ## [1] 881 882 883 884 885 886 887 888

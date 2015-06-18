@@ -56,3 +56,17 @@ fatdiag(m, steps=4) <- NA
 m
 ```
 
+Note that the `steps` argument defines the number of steps on the diagonal ladder.
+Alternatively we could set the `size` of the step.
+
+```{r}
+fatdiag(m, size=c(1,2) ) <- 881:888
+m
+```
+
+So far we have been using the set `fatdiag()`, i.e. `fatdiag()<-`.
+However, we can also use the `fatdiag()` function either for diagonal extraction, or diagonal matrix creation.
+
+```{r}
+fatdiag(m, steps = 4)
+```
