@@ -8,11 +8,11 @@ author:
     email: bquast@gmail.com
     url: http://qua.st/
 title:
-  formatted: "\\pkg{diagonals}: Fat Diagonals in R"
+  formatted: "\\pkg{diagonals}: Fat Diagonals in R\\thanks{The author wishes kindly thanks the Swiss National Science Foundation for funding this work as part of the project 'Development Aid and Social Dynamics' (100018-140745)}"
   plain:     "diagonals: Fat Diagonals in R"
   short:     "\\pkg{diagonals}: Fat Diagonals in R"
 abstract: >
-  The abstract of the article.
+  The diagonals package implements functions for handling fat diagonal matrices, such as those that occur when multiple dimensions are mapped along one edge of a matrix.
 keywords:
   # at least one keyword must be supplied
   formatted: [matrix, diagonal, block, "\\proglang{R}"]
@@ -20,7 +20,9 @@ keywords:
 preamble: >
   \usepackage{amsmath}
 output: rticles::jss_article
+bibliography: citations.bib
 ---
+
 
 # Introduction
 
@@ -52,16 +54,11 @@ diag(sm) <- NA
 sm
 ```
 
-However, for higher-order matrices this does not work well.
+However, for higher-order matrices this does not work well, since the diagonal follows the shortest dimension.
 
 ```{r}
 diag(m) <- NA
 m
-```
-
-```{r echo=FALSE}
-# restore m
-m <- M
 ```
 
 In comes the `diagonals` package and its workhorse `fatdiag()` function.
@@ -72,14 +69,31 @@ but with then for **fat diagonals**.
 library(diagonals)
 ```
 
+```{r echo=FALSE}
+# restore m
+m <- M
+```
+
 ```{r}
 # the matrix m was restored to its original state
 fatdiag(m, steps=4) <- NA
 m
 ```
 
+These fat diagonal matrices can be thought of a a general version of a block diagonal matrix [see @rowland2007block]
+
 Note that the `steps` argument defines the number of steps on the diagonal ladder.
 Alternatively we could set the `size` of the step, more on this later.
+
+The functions is this package where originally written in order to support the `gvc` package,
+which implements a collection of trade-flow indicators.
+
+In trade flows use Inter-Country Input Output tables (ICIOs),
+which map every `country * industry` combination along both edges of the matrix.
+These tables are used to compute the Leontief inverse [@leontief1936quantitative].
+In order to make the value of the Leontief internally comparable we can normalise the inverse using post multiplication.
+Generally, this post multiplication is done using a country's own exports, final demand, etc.
+and since the `country * industry` dimensions are on each edge, this gives us a higher-order matrix for which we want to extrac the diagonal.
 
 
 # Design
@@ -154,9 +168,16 @@ m <- matrix(801:881, nrow=9, ncol=9)
 fatdiag( fatdiag(m, steps=3), steps=3)
 ```
 
+Note that the above code combines the two different ways in which the `fatdiag()` function can be used,
+the interior iteration extracts the fat diagonal from the matrix `m` and returns it as a vector,
+the exterior iteration takes the vector returned by the interior iteration and diagonalises it in a matrix, which is returned.
+
+
 # Conclusion
 
 Higher-order arrays can sometimes be mapped to a matrix, which enables us to visualise these arrays in a intuitive manner.
 However, the standard matrix manipulations relating to diagonals become more complex when we do so.
 The `diagonals` package provides the `fatdiag()` function family, which enables the manipulation of fat diagonals in `R`,
 using a syntax that is very close to the `diag()` function family from `R`s `base` package.
+
+# References

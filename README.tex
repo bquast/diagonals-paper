@@ -3,11 +3,14 @@
 \author{
 Bastiaan Quast\\The Graduate Institute, Geneva
 }
-\title{\pkg{diagonals}: Fat Diagonals in R}
+\title{\pkg{diagonals}: Fat Diagonals in
+R\thanks{The author wishes kindly thanks the Swiss National Science Foundation for funding this work as part of the project 'Development Aid and Social Dynamics' (100018-140745)}}
 \Keywords{matrix, diagonal, block, \proglang{R}}
 
 \Abstract{
-The abstract of the article.
+The diagonals package implements functions for handling fat diagonal
+matrices, such as those that occur when multiple dimensions are mapped
+along one edge of a matrix.
 }
 
 \Plainauthor{Bastiaan Quast}
@@ -81,7 +84,8 @@ sm
 \end{CodeOutput}
 \end{CodeChunk}
 
-However, for higher-order matrices this does not work well.
+However, for higher-order matrices this does not work well, since the
+diagonal follows the shortest dimension.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -123,9 +127,26 @@ D  1  0  1  0  1  1 NA NA
 \end{CodeOutput}
 \end{CodeChunk}
 
+These fat diagonal matrices can be thought of a a general version of a
+block diagonal matrix (see Rowland and Weisstein 2007)
+
 Note that the \texttt{steps} argument defines the number of steps on the
 diagonal ladder. Alternatively we could set the \texttt{size} of the
 step, more on this later.
+
+The functions is this package where originally written in order to
+support the \texttt{gvc} package, which implements a collection of
+trade-flow indicators.
+
+In trade flows use Inter-Country Input Output tables (ICIOs), which map
+every \texttt{country * industry} combination along both edges of the
+matrix. These tables are used to compute the Leontief inverse (Leontief
+1936). In order to make the value of the Leontief internally comparable
+we can normalise the inverse using post multiplication. Generally, this
+post multiplication is done using a country's own exports, final demand,
+etc. and since the \texttt{country * industry} dimensions are on each
+edge, this gives us a higher-order matrix for which we want to extrac
+the diagonal.
 
 \section{Design}\label{design}
 
@@ -281,6 +302,12 @@ fatdiag( fatdiag(m, steps=3), steps=3)
 \end{CodeOutput}
 \end{CodeChunk}
 
+Note that the above code combines the two different ways in which the
+\texttt{fatdiag()} function can be used, the interior iteration extracts
+the fat diagonal from the matrix \texttt{m} and returns it as a vector,
+the exterior iteration takes the vector returned by the interior
+iteration and diagonalises it in a matrix, which is returned.
+
 \section{Conclusion}\label{conclusion}
 
 Higher-order arrays can sometimes be mapped to a matrix, which enables
@@ -290,6 +317,16 @@ when we do so. The \texttt{diagonals} package provides the
 \texttt{fatdiag()} function family, which enables the manipulation of
 fat diagonals in \texttt{R}, using a syntax that is very close to the
 \texttt{diag()} function family from \texttt{R}s \texttt{base} package.
+
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
+
+Leontief, Wassily W. 1936. ``Quantitative Input and Output Relations in
+the Economic Systems of the United States.'' \emph{The Review of
+Economic Statistics}. JSTOR, 105--25.
+
+Rowland, Todd, and Eric Weisstein. 2007. ``Block Diagonal Matrix.''
+MathWorld. \url{http://mathworld.wolfram.com/BlockDiagonalMatrix.html}.
 
 \end{document}
 
