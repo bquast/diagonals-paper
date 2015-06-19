@@ -12,7 +12,7 @@ The abstract of the article.
 
 \Plainauthor{Bastiaan Quast}
 \Plaintitle{diagonals: Fat Diagonals in R}
-\Shorttitle{\pkg{diagonas}: Fat Diagonals in R}
+\Shorttitle{\pkg{diagonals}: Fat Diagonals in R}
 \Plainkeywords{matrix, diagonal, block, R}
 
 %% publication information
@@ -41,15 +41,15 @@ Diagonals are an important matrix manipulation. We present the
 \texttt{diagonals} R package, which implements functions for dealing
 with \textbf{fat diagonals}. Fat diagonals are block matrix-diagonals
 that occur when two or more dimensions are mapped along a single edge of
-a matrix. For an asymetric network graph (e.g.~a dyadic social network)
+a matrix. For an asymmetric network graph (e.g.~a dyadic social network)
 to be mapped to a matrix, we would need each node along each edge of
 matrix, however we would also need to map the direction of the tie,
 which is an additional dimension. Typically these would be represented
 as higher-order arrays (i.e. \textgreater{}= 3). In order to effectively
 visualise such arrays, it can be helpful to do so in a matrix. This
 could for instance be represented as in the following matrix (where the
-\texttt{i} and \texttt{o} suffices prepresent incoming and outgoing
-repectively).
+\texttt{i} and \texttt{o} suffices represent incoming and outgoing
+receptively).
 
 \begin{CodeChunk}
 \begin{CodeOutput}
@@ -63,7 +63,7 @@ D  1  0  1  0  1  1  1  1
 
 Sometimes the ties of a node to itself are not particularly meaningful
 (e.g.~feeling of amiability towards oneself) and can be removed. For a
-symetric network this can simply be done using the function
+symmetric network this can simply be done using the function
 \texttt{diag()} in R's \texttt{base} package, e.g.
 
 \begin{CodeChunk}
@@ -98,24 +98,19 @@ D  1  0  1 NA  1  1  1  1
 \end{CodeChunk}
 
 In comes the \texttt{diagonals} package and its workhorse
-\texttt{fatdiag()} function. The function is designed to mimmick the
+\texttt{fatdiag()} function. The function is designed to mimic the
 behaviour of the \texttt{diag()} as closely as possible, but with then
 for \textbf{fat diagonals}.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-# the matrix m was restored to its original state
 library(diagonals)
 \end{CodeInput}
-\begin{CodeOutput}
+\end{CodeChunk}
 
-D I
-A G
-    O N
-    A L
-        S
-\end{CodeOutput}
+\begin{CodeChunk}
 \begin{CodeInput}
+# the matrix m was restored to its original state
 fatdiag(m, steps=4) <- NA
 m
 \end{CodeInput}
@@ -134,8 +129,8 @@ step, more on this later.
 
 \section{Design}\label{design}
 
-The implemntation of fat diagonals in the \texttt{diagonals} package is
-instended to be as close as possible to the functions dealing with
+The implementation of fat diagonals in the \texttt{diagonals} package is
+intended to be as close as possible to the functions dealing with
 diagonals included in the \texttt{base} package. As such, the package
 includes two functions.
 
@@ -147,8 +142,7 @@ includes two functions.
   \texttt{fatdiag()\textless{}-}
 \end{itemize}
 
-These functions offer a very similar syntax to the \texttt{base}
-functions:
+These functions offer a very similar syntax to the base functions:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -162,12 +156,41 @@ With the exception that the fat diagonal functions generally need more
 information in terms of the number of \texttt{steps} on the diagonal
 ladder, or the \texttt{size} of these steps.
 
+The function \texttt{fatdiag\textless{}-} like its base package
+equivalent replaces the (fat) diagonal of its first argument \texttt{x}
+with the right side argument \texttt{value}. The \texttt{value} argument
+can either be a scalar, in which case it is recycled for the length of
+the diagonal, or it can be vector. For the base package function
+\texttt{diag()\textless{}-} this vector has be of the same length as the
+diagonal (here, the shortest dimension of the matrix), however, the
+\texttt{fatdiag()\textless{}-} function will accept any vector that is
+of a length that is an integer divisor of the length of the diagonal.
+For example, if the length of the diagonal is \texttt{12}, then the
+follow lengths for the replacement vector are accepted: \texttt{1},
+\texttt{2}, \texttt{3}, \texttt{4}, and \texttt{6}.
+
+The \texttt{fatdiag} function act similar to the \texttt{diag()}
+function. Both these functions have two main applications . The first
+application is (fat) diagonal extraction, is the first argument
+\texttt{x} is a matrix, i.e. \texttt{length(dim(x)) == 2}, then the
+function extracts the diagonal matrix and returns it as a vector.
+
+The second application is (fat) diagonal matrix creation. This can be
+done in two ways, using a scalar, or using a vector. If a scalar is used
+for \texttt{x}, the \texttt{diag()} function returns an identity matrix
+\texttt{Ix}, i.e.~a matrix of dimensions \texttt{x} times \texttt{x} is
+returned, with \texttt{1} on the diagonal positions and \texttt{0}
+elsewhere. The \texttt{fatdiag()} function supports the creation of
+non-square matrices (e.g.~using \texttt{size = c(3,2)}) and therefore
+uses \texttt{x} as the longest dimension of the matrix, where the other
+dimension is determined automatically using the \texttt{size} argument.
+
 \section{Usage}\label{usage}
 
 In the introduction we briefly demonstrate the usage of the
-\texttt{fatdiag()} function for assigning new \texttt{value}s to the fat
-diagonal. Here we take a closer look at some of th additional options
-which are available.
+\texttt{fatdiag()} function for assigning a new \texttt{value} to the
+fat diagonal. Here we take a closer look at some of the additional
+functionality that is implemented.
 
 \begin{CodeChunk}
 \begin{CodeInput}
