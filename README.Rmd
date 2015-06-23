@@ -104,7 +104,7 @@ and since the `country * industry` dimensions are on each edge, this gives us a 
 As mentioned in the introduction, the typical use case is the mapping of a 3- or 4-dimensional array to a matrix with two edges,
 this can be done by combining two dimensions along one edge.
 
-In the case of a 3-dimensional array, 
+The matrix used in the introduction is an example of a mapping of a 3-dimensional array.
 
 ```{r, echo=FALSE}
 M
@@ -114,7 +114,7 @@ The **fat diagonals** occur when we have such a matrix and want to select the di
 and all elements along the third dimension.
 In the above matrix for instance, we would select the diagonal along the dimensions `A:D` and `A:D`,
 and all elements along the dimension `i:o`.
-The `size` of the the block on the diagonal here take the values `c(1,n)` with `n` being the `lenght` of the third dimension.
+The `size` of the the block on the diagonal here take the values `c(1,n)` with `n` being the `length` of the third dimension.
 
 ```{r, echo=FALSE}
 m
