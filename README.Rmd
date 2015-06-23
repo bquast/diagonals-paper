@@ -8,7 +8,7 @@ author:
     email: bquast@gmail.com
     url: http://qua.st/
 title:
-  formatted: "\\pkg{diagonals}: Fat Diagonals in R\\thanks{This research was financed by the Swiss National Science Foundation (SNSF) under the grant 'Development Aid and Social Dynamics' (100018-140745) administered by the Graduate Institute's Centre on Conflict, Development and Peacebuilding (CCDP) and led by Jean-Louis Arcand. We thank Sandra Reimann and Oliver Jütersonke at the CCDP for their generous support.}"
+  formatted: "\\pkg{diagonals}: Fat Diagonals in R\\thanks{This research was financed by the Swiss National Science Foundation (SNSF) under the grant 'Development Aid and Social Dynamics' (100018-140745) administered by the Graduate Institute's Centre on Conflict, Development and Peacebuilding (CCDP) and led by Jean-Louis Arcand. We thank Sandra Reimann and Oliver Jutersonke at the CCDP for their generous support.}"
   plain:     "diagonals: Fat Diagonals in R"
   short:     "\\pkg{diagonals}: Fat Diagonals in R"
 abstract: >
@@ -33,15 +33,17 @@ For an asymmetric network graph (e.g. a dyadic social network) to be mapped to a
 however we would also need to map the direction of the tie, which is an additional dimension.
 Typically these would be represented as higher-order arrays (i.e. >= 3).
 In order to effectively visualise such arrays, it can be helpful to do so in a matrix.
-This could for instance be represented as in the following matrix (where the `i` and `o` suffices represent incoming and outgoing receptively). 
+This could for instance be represented as in the following matrix (where the `i` and `o` suffices represent incoming and outgoing respectively). 
 
 ```{r, echo=FALSE}
-M <- data.frame(Ai = c(1,0,1,1), Ao = c(1,1,0,0),
-                Bi = c(0,1,0,1), Bo = c(0,1,0,0),
-                Ci = c(1,0,1,1), Co = c(0,1,1,1),
-                Di = c(1,0,0,1), Do = c(0,1,0,1),
-                row.names = c("A", "B", "C", "D") )
-m <- as.matrix(M)
+M <- matrix(c(1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,1,0,1,1,0,1,1,1,1,0,0,1,0,1,0,1), 
+            nrow = 4, 
+            ncol = 8, 
+            dimnames = list(c("A", "B", "C", "D"),
+                            c("Ai", "Ao", "Bi", "Bo", "Ci", "Co", "Di", "Do")
+                            )
+            )
+m <- M
 m
 ```
 
@@ -49,7 +51,8 @@ Sometimes the ties of a node to itself are not particularly meaningful (e.g. fee
 For a symmetric network this can simply be done using the function `diag()` in R's `base` package, e.g.
 
 ```{r}
-sm <- matrix(1, nrow=4, ncol=4)
+sm <- matrix(1, nrow=4, ncol=4,
+             dimnames = list(c("A","B","C","D"),c("A","B","C","D")))
 diag(sm) <- NA
 sm
 ```

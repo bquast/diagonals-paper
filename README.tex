@@ -4,7 +4,7 @@
 Bastiaan Quast\\The Graduate Institute, Geneva
 }
 \title{\pkg{diagonals}: Fat Diagonals in
-R\thanks{This research was financed by the Swiss National Science Foundation (SNSF) under the grant 'Development Aid and Social Dynamics' (100018-140745) administered by the Graduate Institute's Centre on Conflict, Development and Peacebuilding (CCDP) and led by Jean-Louis Arcand. We thank Sandra Reimann and Oliver Jütersonke at the CCDP for their generous support.}}
+R\thanks{This research was financed by the Swiss National Science Foundation (SNSF) under the grant 'Development Aid and Social Dynamics' (100018-140745) administered by the Graduate Institute's Centre on Conflict, Development and Peacebuilding (CCDP) and led by Jean-Louis Arcand. We thank Sandra Reimann and Oliver Jutersonke at the CCDP for their generous support.}}
 \Keywords{matrix, diagonal, block, \proglang{R}}
 
 \Abstract{
@@ -52,7 +52,7 @@ as higher-order arrays (i.e. \textgreater{}= 3). In order to effectively
 visualise such arrays, it can be helpful to do so in a matrix. This
 could for instance be represented as in the following matrix (where the
 \texttt{i} and \texttt{o} suffices represent incoming and outgoing
-receptively).
+respectively).
 
 \begin{CodeChunk}
 \begin{CodeOutput}
@@ -71,16 +71,17 @@ symmetric network this can simply be done using the function
 
 \begin{CodeChunk}
 \begin{CodeInput}
-sm <- matrix(1, nrow=4, ncol=4)
+sm <- matrix(1, nrow=4, ncol=4,
+             dimnames = list(c("A","B","C","D"),c("A","B","C","D")))
 diag(sm) <- NA
 sm
 \end{CodeInput}
 \begin{CodeOutput}
-     [,1] [,2] [,3] [,4]
-[1,]   NA    1    1    1
-[2,]    1   NA    1    1
-[3,]    1    1   NA    1
-[4,]    1    1    1   NA
+   A  B  C  D
+A NA  1  1  1
+B  1 NA  1  1
+C  1  1 NA  1
+D  1  1  1 NA
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -110,9 +111,6 @@ for \textbf{fat diagonals}.
 \begin{CodeInput}
 library(diagonals)
 \end{CodeInput}
-\begin{CodeOutput}
-Warning: package 'diagonals' was built under R version 3.2.1
-\end{CodeOutput}
 \end{CodeChunk}
 
 \begin{CodeChunk}
@@ -270,6 +268,18 @@ or using a vector:
 \begin{CodeInput}
 fatdiag(1:27, steps=3)
 \end{CodeInput}
+\begin{CodeOutput}
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+ [1,]    1    4    7    0    0    0    0    0    0
+ [2,]    2    5    8    0    0    0    0    0    0
+ [3,]    3    6    9    0    0    0    0    0    0
+ [4,]    0    0    0   10   13   16    0    0    0
+ [5,]    0    0    0   11   14   17    0    0    0
+ [6,]    0    0    0   12   15   18    0    0    0
+ [7,]    0    0    0    0    0    0   19   22   25
+ [8,]    0    0    0    0    0    0   20   23   26
+ [9,]    0    0    0    0    0    0   21   24   27
+\end{CodeOutput}
 \end{CodeChunk}
 
 We can extract a fat diagonal and diagonalise it again.
@@ -279,6 +289,18 @@ We can extract a fat diagonal and diagonalise it again.
 m <- matrix(801:881, nrow=9, ncol=9)
 fatdiag( fatdiag(m, steps=3), steps=3)
 \end{CodeInput}
+\begin{CodeOutput}
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+ [1,]  801  810  819    0    0    0    0    0    0
+ [2,]  802  811  820    0    0    0    0    0    0
+ [3,]  803  812  821    0    0    0    0    0    0
+ [4,]    0    0    0  831  840  849    0    0    0
+ [5,]    0    0    0  832  841  850    0    0    0
+ [6,]    0    0    0  833  842  851    0    0    0
+ [7,]    0    0    0    0    0    0  861  870  879
+ [8,]    0    0    0    0    0    0  862  871  880
+ [9,]    0    0    0    0    0    0  863  872  881
+\end{CodeOutput}
 \end{CodeChunk}
 
 Note that the above code combines the two different ways in which the
