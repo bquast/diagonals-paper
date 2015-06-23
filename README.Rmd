@@ -31,8 +31,8 @@ We present the `diagonals` R package, which implements functions for dealing wit
 Fat diagonals are block matrix-diagonals that occur when two or more dimensions are mapped along a single edge of a matrix.
 For an asymmetric network graph (e.g. a dyadic social network) to be mapped to a matrix, we would need each node along each edge of matrix,
 however we would also need to map the direction of the tie, which is an additional dimension.
-Typically these would be represented as higher-order arrays (i.e. `length( dim(m) ) >= 3`).
-In order to effectively visualise such arrays, it can be helpful to do so in a matrix (i.e. `length( dim(m) ) == 2`).
+Typically these would be represented as higher-order arrays (i.e. `length(dim(m))>=3`).
+In order to effectively visualise such arrays, it can be helpful to do so in a matrix (i.e. `length(dim(m))==2`).
 This could for instance be represented as in the following matrix (where the `i` and `o` suffices represent incoming and outgoing respectively). 
 
 ```{r, echo=FALSE}
@@ -83,8 +83,6 @@ fatdiag(m, steps=4) <- NA
 m
 ```
 
-These fat diagonal matrices can be thought of a a general version of a block diagonal matrix [see @rowland2007block]
-
 Note that the `steps` argument defines the number of steps on the diagonal ladder.
 Alternatively we could set the `size` of the step, more on this later.
 
@@ -101,8 +99,12 @@ and since the `country * industry` dimensions are on each edge, this gives us a 
 
 # Data
 
-As mentioned in the introduction, the typical use case is the mapping of a 3- or 4-dimensional array to a matrix with two edges,
+As mentioned in the introduction,
+the typical use case is the mapping of a 3- or 4-dimensional array to a matrix with two edges,
 this can be done by combining two dimensions along one edge.
+This form of representation occupies a middle group between the mathematically efficient `array`,
+and the intuitive tidy data [see @tidy2014wickham], being the most efficient way that is directly representable on paper.
+
 
 The matrix used in the introduction is an example of a mapping of a 3-dimensional array.
 
@@ -122,6 +124,33 @@ m
 
 
 In the case of a 4-dimensional array we would combine 2 dimensions along each of the edges of the new matrix.
+An oft encountered example is trade flow register called the Inter Country Input-Output table (ICIO).
+ICIOs map all trade flows from countries and industries to each other.
+These tables are generally represented as matrices where each industry for each country is present along each edge,
+whereby rows represent outputs and columns represent inputs.
+In order to compute certain trade indicators for countries,
+it is often necessary to either extract the fat diagonal, or zero it out.
+Implementing these indicators for the `gvc` R package
+was the original impertus for implementing the procedures which became the `diagonals` package.
+
+An example of a minitiature ICIO is this, which `CH` represent Switzerland and `RoW` represents the rest of the world,
+each have three industries named `1`, `2`, and `3`.
+
+
+```{r, echo=FALSE}
+M2 <- matrix(c(1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,1,0,1,1,0,1,1,1,1,0,0,1,0,1,0,1,0,1,0,1), 
+            nrow = 6, 
+            ncol = 6, 
+            dimnames = list(c("CH1", "CH2", "CH3", "RoW1", "RoW2", "RoW3"),
+                            c("CH1", "CH2", "CH3", "RoW1", "RoW2", "RoW3")
+                            )
+            )
+M2
+```
+
+These fat diagonal matrices can be thought of as a generalised version of a block diagonal matrix [see @rowland2007block].
+However, although it is common for the combinations of dimensions along the edges to be identicatal,
+and hence the `steps` square, this is not necessary.
 
 
 # Design
@@ -137,24 +166,31 @@ These functions offer a very similar syntax to the base functions:
 - `diag()`
 - `diag()<-`
 
-With the exception that the fat diagonal functions generally need more information in terms of the number of `steps` on the diagonal ladder, or the `size` of these steps.
+With the exception that the fat diagonal functions generally need more information,
+in terms of the number of `steps` on the diagonal ladder, or the `size` of these steps.
 
-The function `fatdiag<-` like its base package equivalent replaces the (fat) diagonal of its first argument `x` with the right side argument `value`.
-The `value` argument can either be a scalar, in which case it is recycled for the length of the diagonal,
-or it can be vector.
-For the base package function `diag()<-` this vector has be of the same length as the diagonal (here, the shortest dimension of the matrix),
-however, the `fatdiag()<-` function will accept any vector that is of a length that is an integer divisor of the length of the diagonal.
-For example, if the length of the diagonal is `12`, then the follow lengths for the replacement vector are accepted: `1`, `2`, `3`, `4`, and `6`.
+The function `fatdiag<-` like its base package equivalent,
+replaces the (fat) diagonal of its first argument `x` with the right side argument `value`.
+The `value` argument can either be a scalar,
+in which case it is recycled for the length of the diagonal, or it can be vector.
+For the base package function `diag()<-` this vector has be of the same length as the diagonal
+(here, the shortest dimension of the matrix),
+however, the `fatdiag()<-` function will accept any vector
+that is of a length that is an integer divisor of the length of the diagonal.
+For example, if the length of the diagonal is `12`,
+then the follow lengths for the replacement vector are accepted: `1`, `2`, `3`, `4`, and `6`.
 
 The `fatdiag` function act similar to the `diag()` function.
 Both these functions have two main applications .
-The first application is (fat) diagonal extraction, is the first argument `x` is a matrix, i.e. `length(dim(x)) == 2`,
+The first application is (fat) diagonal extraction,
+is the first argument `x` is a matrix, i.e. `length(dim(x)) == 2`,
 then the function extracts the diagonal matrix and returns it as a vector.
 
 The second application is (fat) diagonal matrix creation.
 This can be done in two ways, using a scalar, or using a vector.
 If a scalar is used for `x`, the `diag()` function returns an identity matrix `Ix`,
-i.e. a matrix of dimensions `x` times `x` is returned, with `1` on the diagonal positions and `0` elsewhere.
+i.e. a matrix of dimensions `x` times `x` is returned,
+with `1` on the diagonal positions and `0` elsewhere.
 The `fatdiag()` function supports the creation of non-square matrices (e.g. using `size = c(3,2)`)
 and therefore uses `x` as the longest dimension of the matrix,
 where the other dimension is determined automatically using the `size` argument.
@@ -180,25 +216,26 @@ fatdiag(m, steps = 4)
 Fat diagonal matrices can be created using a scalar:
 
 ```{r}
-fatdiag(9, steps=3)
+fatdiag(6, steps=3)
 ```
 
 or using a vector:
 
 ```{r}
-fatdiag(1:27, steps=3)
+fatdiag(1:12, steps=3)
 ```
 
 We can extract a fat diagonal and diagonalise it again.
 
 ```{r}
-m <- matrix(801:881, nrow=9, ncol=9)
-fatdiag( fatdiag(m, steps=3), steps=3)
+m <- matrix(631:666, nrow=6, ncol=6)
+(extr_fat_diag <- fatdiag(m, steps=3))
+fatdiag(extr_fat_diag , steps=3)
 ```
 
 Note that the above code combines the two different ways in which the `fatdiag()` function can be used,
-the interior iteration extracts the fat diagonal from the matrix `m` and returns it as a vector,
-the exterior iteration takes the vector returned by the interior iteration and diagonalises it in a matrix, which is returned.
+the first iteration extracts the fat diagonal from the matrix `m` and returns it as a vector `extr_fat_diag`,
+the second iteration takes the vector returned by the first iteration and diagonalises it in a matrix, which is returned.
 
 
 # Conclusion
@@ -207,5 +244,6 @@ Higher-order arrays can sometimes be mapped to a matrix, which enables us to vis
 However, the standard matrix manipulations relating to diagonals become more complex when we do so.
 The `diagonals` package provides the `fatdiag()` function family, which enables the manipulation of fat diagonals in `R`,
 using a syntax that is very close to the `diag()` function family from `R`s `base` package.
+
 
 # References

@@ -9,11 +9,11 @@ an asymmetric network graph (e.g. a dyadic social network) to be mapped
 to a matrix, we would need each node along each edge of matrix, however
 we would also need to map the direction of the tie, which is an
 additional dimension. Typically these would be represented as
-higher-order arrays (i.e. `length( dim(m) ) >= 3`). In order to
-effectively visualise such arrays, it can be helpful to do so in a
-matrix (i.e. `length( dim(m) ) == 2`). This could for instance be
-represented as in the following matrix (where the `i` and `o` suffices
-represent incoming and outgoing respectively).
+higher-order arrays (i.e. `length(dim(m))>=3`). In order to effectively
+visualise such arrays, it can be helpful to do so in a matrix (i.e.
+`length(dim(m))==2`). This could for instance be represented as in the
+following matrix (where the `i` and `o` suffices represent incoming and
+outgoing respectively).
 
     ##   Ai Ao Bi Bo Ci Co Di Do
     ## A  1  1  0  0  1  0  1  0
@@ -65,9 +65,6 @@ closely as possible, but with then for **fat diagonals**.
     ## C  1  0  0  0 NA NA  0  0
     ## D  1  0  1  0  1  1 NA NA
 
-These fat diagonal matrices can be thought of a a general version of a
-block diagonal matrix (see Rowland and Weisstein 2007)
-
 Note that the `steps` argument defines the number of steps on the
 diagonal ladder. Alternatively we could set the `size` of the step, more
 on this later.
@@ -90,7 +87,10 @@ Data
 
 As mentioned in the introduction, the typical use case is the mapping of
 a 3- or 4-dimensional array to a matrix with two edges, this can be done
-by combining two dimensions along one edge.
+by combining two dimensions along one edge. This form of representation
+occupies a middle group between the mathematically efficient `array`,
+and the intuitive tidy data (see Wickham 2014), being the most efficient
+way that is directly representable on paper.
 
 The matrix used in the introduction is an example of a mapping of a
 3-dimensional array.
@@ -116,7 +116,33 @@ the third dimension.
     ## D  1  0  1  0  1  1 NA NA
 
 In the case of a 4-dimensional array we would combine 2 dimensions along
-each of the edges of the new matrix.
+each of the edges of the new matrix. An oft encountered example is trade
+flow register called the Inter Country Input-Output table (ICIO). ICIOs
+map all trade flows from countries and industries to each other. These
+tables are generally represented as matrices where each industry for
+each country is present along each edge, whereby rows represent outputs
+and columns represent inputs. In order to compute certain trade
+indicators for countries, it is often necessary to either extract the
+fat diagonal, or zero it out. Implementing these indicators for the
+`gvc` R package was the original impertus for implementing the
+procedures which became the `diagonals` package.
+
+An example of a minitiature ICIO is this, which `CH` represent
+Switzerland and `RoW` represents the rest of the world, each have three
+industries named `1`, `2`, and `3`.
+
+    ##      CH1 CH2 CH3 RoW1 RoW2 RoW3
+    ## CH1    1   0   0    1    1    0
+    ## CH2    0   0   1    1    0    1
+    ## CH3    1   0   0    0    0    0
+    ## RoW1   1   1   0    1    1    1
+    ## RoW2   1   0   1    1    0    0
+    ## RoW3   1   1   0    1    1    1
+
+These fat diagonal matrices can be thought of as a generalised version
+of a block diagonal matrix (see Rowland and Weisstein 2007). However,
+although it is common for the combinations of dimensions along the edges
+to be identicatal, and hence the `steps` square, this is not necessary.
 
 Design
 ======
@@ -135,10 +161,10 @@ These functions offer a very similar syntax to the base functions:
 -   `diag()<-`
 
 With the exception that the fat diagonal functions generally need more
-information in terms of the number of `steps` on the diagonal ladder, or
-the `size` of these steps.
+information, in terms of the number of `steps` on the diagonal ladder,
+or the `size` of these steps.
 
-The function `fatdiag<-` like its base package equivalent replaces the
+The function `fatdiag<-` like its base package equivalent, replaces the
 (fat) diagonal of its first argument `x` with the right side argument
 `value`. The `value` argument can either be a scalar, in which case it
 is recycled for the length of the diagonal, or it can be vector. For the
@@ -190,54 +216,49 @@ extraction, or diagonal matrix creation.
 
 Fat diagonal matrices can be created using a scalar:
 
-    fatdiag(9, steps=3)
+    fatdiag(6, steps=3)
 
-    ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-    ##  [1,]    1    1    1    0    0    0    0    0    0
-    ##  [2,]    1    1    1    0    0    0    0    0    0
-    ##  [3,]    1    1    1    0    0    0    0    0    0
-    ##  [4,]    0    0    0    1    1    1    0    0    0
-    ##  [5,]    0    0    0    1    1    1    0    0    0
-    ##  [6,]    0    0    0    1    1    1    0    0    0
-    ##  [7,]    0    0    0    0    0    0    1    1    1
-    ##  [8,]    0    0    0    0    0    0    1    1    1
-    ##  [9,]    0    0    0    0    0    0    1    1    1
+    ##      [,1] [,2] [,3] [,4] [,5] [,6]
+    ## [1,]    1    1    0    0    0    0
+    ## [2,]    1    1    0    0    0    0
+    ## [3,]    0    0    1    1    0    0
+    ## [4,]    0    0    1    1    0    0
+    ## [5,]    0    0    0    0    1    1
+    ## [6,]    0    0    0    0    1    1
 
 or using a vector:
 
-    fatdiag(1:27, steps=3)
+    fatdiag(1:12, steps=3)
 
-    ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-    ##  [1,]    1    4    7    0    0    0    0    0    0
-    ##  [2,]    2    5    8    0    0    0    0    0    0
-    ##  [3,]    3    6    9    0    0    0    0    0    0
-    ##  [4,]    0    0    0   10   13   16    0    0    0
-    ##  [5,]    0    0    0   11   14   17    0    0    0
-    ##  [6,]    0    0    0   12   15   18    0    0    0
-    ##  [7,]    0    0    0    0    0    0   19   22   25
-    ##  [8,]    0    0    0    0    0    0   20   23   26
-    ##  [9,]    0    0    0    0    0    0   21   24   27
+    ##      [,1] [,2] [,3] [,4] [,5] [,6]
+    ## [1,]    1    3    0    0    0    0
+    ## [2,]    2    4    0    0    0    0
+    ## [3,]    0    0    5    7    0    0
+    ## [4,]    0    0    6    8    0    0
+    ## [5,]    0    0    0    0    9   11
+    ## [6,]    0    0    0    0   10   12
 
 We can extract a fat diagonal and diagonalise it again.
 
-    m <- matrix(801:881, nrow=9, ncol=9)
-    fatdiag( fatdiag(m, steps=3), steps=3)
+    m <- matrix(631:666, nrow=6, ncol=6)
+    (extr_fat_diag <- fatdiag(m, steps=3))
 
-    ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-    ##  [1,]  801  810  819    0    0    0    0    0    0
-    ##  [2,]  802  811  820    0    0    0    0    0    0
-    ##  [3,]  803  812  821    0    0    0    0    0    0
-    ##  [4,]    0    0    0  831  840  849    0    0    0
-    ##  [5,]    0    0    0  832  841  850    0    0    0
-    ##  [6,]    0    0    0  833  842  851    0    0    0
-    ##  [7,]    0    0    0    0    0    0  861  870  879
-    ##  [8,]    0    0    0    0    0    0  862  871  880
-    ##  [9,]    0    0    0    0    0    0  863  872  881
+    ##  [1] 631 632 637 638 645 646 651 652 659 660 665 666
+
+    fatdiag(extr_fat_diag , steps=3)
+
+    ##      [,1] [,2] [,3] [,4] [,5] [,6]
+    ## [1,]  631  637    0    0    0    0
+    ## [2,]  632  638    0    0    0    0
+    ## [3,]    0    0  645  651    0    0
+    ## [4,]    0    0  646  652    0    0
+    ## [5,]    0    0    0    0  659  665
+    ## [6,]    0    0    0    0  660  666
 
 Note that the above code combines the two different ways in which the
-`fatdiag()` function can be used, the interior iteration extracts the
-fat diagonal from the matrix `m` and returns it as a vector, the
-exterior iteration takes the vector returned by the interior iteration
+`fatdiag()` function can be used, the first iteration extracts the fat
+diagonal from the matrix `m` and returns it as a vector `extr_fat_diag`,
+the second iteration takes the vector returned by the first iteration
 and diagonalises it in a matrix, which is returned.
 
 Conclusion
@@ -260,3 +281,6 @@ Statistics*. JSTOR, 105–25.
 
 Rowland, Todd, and Eric Weisstein. 2007. “Block Diagonal Matrix.”
 MathWorld. <http://mathworld.wolfram.com/BlockDiagonalMatrix.html>.
+
+Wickham, Hadley. 2014. “Tidy Data.” *The Journal of Statistical
+Software* 59 (10). <http://www.jstatsoft.org/v59/i10/>.
