@@ -8,7 +8,7 @@ author:
     email: bquast@gmail.com
     url: http://qua.st/
 title:
-  formatted: "\\pkg{diagonals}: Fat Diagonals in R\\thanks{The author wishes kindly thanks the Swiss National Science Foundation for funding this work as part of the project 'Development Aid and Social Dynamics' (100018-140745)}"
+  formatted: "\\pkg{diagonals}: Fat Diagonals in R\\thanks{This research was financed by the Swiss National Science Foundation (SNSF) under the grant 'Development Aid and Social Dynamics' (100018-140745) administered by the Graduate Institute's Centre on Conflict, Development and Peacebuilding (CCDP) and led by Jean-Louis Arcand. We thank Sandra Reimann and Oliver Jütersonke at the CCDP for their generous support.}"
   plain:     "diagonals: Fat Diagonals in R"
   short:     "\\pkg{diagonals}: Fat Diagonals in R"
 abstract: >
