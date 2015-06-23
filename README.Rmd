@@ -31,8 +31,8 @@ We present the `diagonals` R package, which implements functions for dealing wit
 Fat diagonals are block matrix-diagonals that occur when two or more dimensions are mapped along a single edge of a matrix.
 For an asymmetric network graph (e.g. a dyadic social network) to be mapped to a matrix, we would need each node along each edge of matrix,
 however we would also need to map the direction of the tie, which is an additional dimension.
-Typically these would be represented as higher-order arrays (i.e. >= 3).
-In order to effectively visualise such arrays, it can be helpful to do so in a matrix.
+Typically these would be represented as higher-order arrays (i.e. `length( dim(m) ) >= 3`).
+In order to effectively visualise such arrays, it can be helpful to do so in a matrix (i.e. `length( dim(m) ) == 2`).
 This could for instance be represented as in the following matrix (where the `i` and `o` suffices represent incoming and outgoing respectively). 
 
 ```{r, echo=FALSE}
@@ -97,6 +97,31 @@ These tables are used to compute the Leontief inverse [@leontief1936quantitative
 In order to make the value of the Leontief internally comparable we can normalise the inverse using post multiplication.
 Generally, this post multiplication is done using a country's own exports, final demand, etc.
 and since the `country * industry` dimensions are on each edge, this gives us a higher-order matrix for which we want to extrac the diagonal.
+
+
+# Data
+
+As mentioned in the introduction, the typical use case is the mapping of a 3- or 4-dimensional array to a matrix with two edges,
+this can be done by combining two dimensions along one edge.
+
+In the case of a 3-dimensional array, 
+
+```{r, echo=FALSE}
+M
+```
+
+The **fat diagonals** occur when we have such a matrix and want to select the diagonal along two of these dimensions,
+and all elements along the third dimension.
+In the above matrix for instance, we would select the diagonal along the dimensions `A:D` and `A:D`,
+and all elements along the dimension `i:o`.
+The `size` of the the block on the diagonal here take the values `c(1,n)` with `n` being the `lenght` of the third dimension.
+
+```{r, echo=FALSE}
+m
+```
+
+
+In the case of a 4-dimensional array we would combine 2 dimensions along each of the edges of the new matrix.
 
 
 # Design

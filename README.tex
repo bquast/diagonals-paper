@@ -48,11 +48,12 @@ a matrix. For an asymmetric network graph (e.g.~a dyadic social network)
 to be mapped to a matrix, we would need each node along each edge of
 matrix, however we would also need to map the direction of the tie,
 which is an additional dimension. Typically these would be represented
-as higher-order arrays (i.e. \textgreater{}= 3). In order to effectively
-visualise such arrays, it can be helpful to do so in a matrix. This
-could for instance be represented as in the following matrix (where the
-\texttt{i} and \texttt{o} suffices represent incoming and outgoing
-respectively).
+as higher-order arrays (i.e.
+\texttt{length( dim(m) ) \textgreater{}= 3}). In order to effectively
+visualise such arrays, it can be helpful to do so in a matrix (i.e.
+\texttt{length( dim(m) ) == 2}). This could for instance be represented
+as in the following matrix (where the \texttt{i} and \texttt{o} suffices
+represent incoming and outgoing respectively).
 
 \begin{CodeChunk}
 \begin{CodeOutput}
@@ -148,6 +149,45 @@ post multiplication is done using a country's own exports, final demand,
 etc. and since the \texttt{country * industry} dimensions are on each
 edge, this gives us a higher-order matrix for which we want to extrac
 the diagonal.
+
+\section{Data}\label{data}
+
+As mentioned in the introduction, the typical use case is the mapping of
+a 3- or 4-dimensional array to a matrix with two edges, this can be done
+by combining two dimensions along one edge.
+
+In the case of a 3-dimensional array,
+
+\begin{CodeChunk}
+\begin{CodeOutput}
+  Ai Ao Bi Bo Ci Co Di Do
+A  1  1  0  0  1  0  1  0
+B  0  1  1  1  0  1  0  1
+C  1  0  0  0  1  1  0  0
+D  1  0  1  0  1  1  1  1
+\end{CodeOutput}
+\end{CodeChunk}
+
+The \textbf{fat diagonals} occur when we have such a matrix and want to
+select the diagonal along two of these dimensions, and all elements
+along the third dimension. In the above matrix for instance, we would
+select the diagonal along the dimensions \texttt{A:D} and \texttt{A:D},
+and all elements along the dimension \texttt{i:o}. The \texttt{size} of
+the the block on the diagonal here take the values \texttt{c(1,n)} with
+\texttt{n} being the \texttt{lenght} of the third dimension.
+
+\begin{CodeChunk}
+\begin{CodeOutput}
+  Ai Ao Bi Bo Ci Co Di Do
+A NA NA  0  0  1  0  1  0
+B  0  1 NA NA  0  1  0  1
+C  1  0  0  0 NA NA  0  0
+D  1  0  1  0  1  1 NA NA
+\end{CodeOutput}
+\end{CodeChunk}
+
+In the case of a 4-dimensional array we would combine 2 dimensions along
+each of the edges of the new matrix.
 
 \section{Design}\label{design}
 
