@@ -19,7 +19,9 @@ keywords:
   plain:     [matrix, diagonal, block, R]
 preamble: >
   \usepackage{amsmath}
-output: rticles::jss_article
+output:
+   - rticles::jss_article
+   - md_document
 bibliography: citations.bib
 ---
 
@@ -33,7 +35,7 @@ For an asymmetric network graph (e.g. a dyadic social network) to be mapped to a
 however we would also need to map the direction of the tie, which is an additional dimension.
 Typically these would be represented as higher-order arrays (i.e. `length(dim(m))>=3`).
 In order to effectively visualise such arrays, it can be helpful to do so in a matrix (i.e. `length(dim(m))==2`).
-This could for instance be represented as in the following matrix (where the `i` and `o` suffices represent incoming and outgoing respectively). 
+This could for instance be represented as in the following matrix (where the `i` and `o` suffices represent incoming and outgoing respectively).
 
 ```{r, echo=FALSE}
 M <- matrix(c(1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,1,0,1,1,0,1,1,1,1,0,0,1,0,1,0,1), 
@@ -95,6 +97,8 @@ These tables are used to compute the Leontief inverse [@leontief1936quantitative
 In order to make the value of the Leontief internally comparable we can normalise the inverse using post multiplication.
 Generally, this post multiplication is done using a country's own exports, final demand, etc.
 and since the `country * industry` dimensions are on each edge, this gives us a higher-order matrix for which we want to extrac the diagonal.
+
+Existing packages that deal with similar topics `R`'s [@R] package `Matrix` [@bates2015matrix] and specifically, for block diagonals the `bdsmatrix` package [@therneau2014bdsmatrix] and the `jointDiag` package [@gouy2009jointDiag].
 
 
 # Data

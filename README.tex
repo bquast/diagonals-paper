@@ -146,6 +146,11 @@ etc. and since the \texttt{country * industry} dimensions are on each
 edge, this gives us a higher-order matrix for which we want to extrac
 the diagonal.
 
+Existing packages that deal with similar topics \texttt{R}'s (R Core
+Team 2015) package \texttt{Matrix} (Bates and Maechler 2015) and
+specifically, for block diagonals the \texttt{bdsmatrix} package
+(Therneau 2014) and the \texttt{jointDiag} package (Gouy-Pailler 2009).
+
 \section{Data}\label{data}
 
 As mentioned in the introduction, the typical use case is the mapping of
@@ -391,12 +396,27 @@ fat diagonals in \texttt{R}, using a syntax that is very close to the
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
+Bates, Douglas, and Martin Maechler. 2015. \emph{Matrix: Sparse and
+Dense Matrix Classes and Methods}.
+\url{http://CRAN.R-project.org/package=Matrix}.
+
+Gouy-Pailler, Cedric. 2009. \emph{JointDiag: Joint Approximate
+Diagonalization of a Set of Square Matrices}.
+\url{http://CRAN.R-project.org/package=jointDiag}.
+
 Leontief, Wassily W. 1936. ``Quantitative Input and Output Relations in
 the Economic Systems of the United States.'' \emph{The Review of
 Economic Statistics}. JSTOR, 105--25.
 
+R Core Team. 2015. \emph{R: A Language and Environment for Statistical
+Computing}. Vienna, Austria: R Foundation for Statistical Computing.
+\url{http://www.R-project.org/}.
+
 Rowland, Todd, and Eric Weisstein. 2007. ``Block Diagonal Matrix.''
 MathWorld. \url{http://mathworld.wolfram.com/BlockDiagonalMatrix.html}.
+
+Therneau, Terry. 2014. \emph{Bdsmatrix: Routines for Block Diagonal
+Symmetric Matrices}. \url{http://CRAN.R-project.org/package=bdsmatrix}.
 
 Wickham, Hadley. 2014. ``Tidy Data.'' \emph{The Journal of Statistical
 Software} 59 (10). \url{http://www.jstatsoft.org/v59/i10/}.

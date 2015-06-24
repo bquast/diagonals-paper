@@ -82,6 +82,11 @@ multiplication is done using a country's own exports, final demand, etc.
 and since the `country * industry` dimensions are on each edge, this
 gives us a higher-order matrix for which we want to extrac the diagonal.
 
+Existing packages that deal with similar topics `R`'s (R Core Team 2015)
+package `Matrix` (Bates and Maechler 2015) and specifically, for block
+diagonals the `bdsmatrix` package (Therneau 2014) and the `jointDiag`
+package (Gouy-Pailler 2009).
+
 Data
 ====
 
@@ -275,12 +280,26 @@ syntax that is very close to the `diag()` function family from `R`s
 References
 ==========
 
+Bates, Douglas, and Martin Maechler. 2015. *Matrix: Sparse and Dense
+Matrix Classes and Methods*. <http://CRAN.R-project.org/package=Matrix>.
+
+Gouy-Pailler, Cedric. 2009. *JointDiag: Joint Approximate
+Diagonalization of a Set of Square Matrices*.
+<http://CRAN.R-project.org/package=jointDiag>.
+
 Leontief, Wassily W. 1936. “Quantitative Input and Output Relations in
 the Economic Systems of the United States.” *The Review of Economic
 Statistics*. JSTOR, 105–25.
 
+R Core Team. 2015. *R: A Language and Environment for Statistical
+Computing*. Vienna, Austria: R Foundation for Statistical Computing.
+<http://www.R-project.org/>.
+
 Rowland, Todd, and Eric Weisstein. 2007. “Block Diagonal Matrix.”
 MathWorld. <http://mathworld.wolfram.com/BlockDiagonalMatrix.html>.
+
+Therneau, Terry. 2014. *Bdsmatrix: Routines for Block Diagonal Symmetric
+Matrices*. <http://CRAN.R-project.org/package=bdsmatrix>.
 
 Wickham, Hadley. 2014. “Tidy Data.” *The Journal of Statistical
 Software* 59 (10). <http://www.jstatsoft.org/v59/i10/>.
