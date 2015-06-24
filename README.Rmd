@@ -20,8 +20,9 @@ keywords:
 preamble: >
   \usepackage{amsmath}
 output:
-   - rticles::jss_article
-   - md_document
+   md_document
+   
+   rticles::jss_article
 bibliography: citations.bib
 ---
 
