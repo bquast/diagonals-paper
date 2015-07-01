@@ -200,6 +200,12 @@ The `fatdiag()` function supports the creation of non-square matrices (e.g. usin
 and therefore uses `x` as the longest dimension of the matrix,
 where the other dimension is determined automatically using the `size` argument.
 
+In addition to the `fatdiag()` function family,
+a function to create fat matrices from arrays is provided.
+The `matricise()` function takes three- or four-dimensional array and outputs a matrix.
+Resizing or transposing an array to a matrix is traditionally done using `dim()<-` and `aperm` respectively,
+however ordering in of the data using these methods does not create the fat matrix design that we are looking for.
+
 
 # Usage
 
@@ -241,6 +247,24 @@ fatdiag(extr_fat_diag , steps=3)
 Note that the above code combines the two different ways in which the `fatdiag()` function can be used,
 the first iteration extracts the fat diagonal from the matrix `m` and returns it as a vector `extr_fat_diag`,
 the second iteration takes the vector returned by the first iteration and diagonalises it in a matrix, which is returned.
+
+The type of fat matrices that we analyse above can be created from `array`s using the `matricise()` function.
+
+```{r}
+(a <- array( 1:81, dim = c(3,3,3,3) ) )
+```
+
+```{r}
+matricise(a, row_dim = 3, col_dim=4)
+```
+
+alternatively
+
+```{r}
+matricise(a, row_dim = 4, col_dim=3)
+```
+
+
 
 
 # Conclusion
