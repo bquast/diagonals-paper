@@ -12,7 +12,8 @@ title:
   plain:     "diagonals: Fat Diagonals in R"
   short:     "\\pkg{diagonals}: Fat Diagonals in R"
 abstract: >
-  The diagonals package implements functions for handling fat diagonal matrices, such as those that occur when multiple dimensions are mapped along one edge of a matrix.
+  The diagonals package implements functions for handling fat diagonal matrices, such as those that occur when multiple dimensions are mapped along one or both edges of a matrix.
+  The functions are called `fatdiag` and `fatdiag<-` and are designed to resemble the behaviour of the `base` package's `diag` and `diag<-` functions.
 keywords:
   # at least one keyword must be supplied
   formatted: [matrix, diagonal, block, "\\proglang{R}"]
